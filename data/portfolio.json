@@ -1,0 +1,178 @@
+{
+  "meta": {
+    "name": "Bharath Lakkoju",
+    "title": "Full Stack Developer & AI Engineer",
+    "tagline": "Building intelligent, scalable web applications that matter.",
+    "email": "lbh.lbharath@gmail.com",
+    "phone": "+917032380489",
+    "location": "Hyderabad, India",
+    "linkedin": "https://linkedin.com/in/bharathlakkoju",
+    "github": "https://github.com/bharathlakkoju",
+    "availability": "Open to SDE-1, SDE-2, Full Stack & AI Engineer roles",
+    "bio": "Full Stack Developer with 2+ years of experience architecting scalable web applications and integrating AI-driven predictive analytics. Passionate about building tools that solve real problems — from AI-powered resume evaluators to shared living management apps. Proficient in React, Next.js, Node.js, TypeScript, and Python."
+  },
+  "experience": [
+    {
+      "id": "exp-1",
+      "company": "UST Global",
+      "role": "Developer I",
+      "location": "Hyderabad, India",
+      "startDate": "Sep 2024",
+      "endDate": "Present",
+      "current": true,
+      "bullets": [
+        "Architected and deployed a full-stack health tracking application using React Native, Node.js, and PostgreSQL, implementing a reward system that increased user engagement by 60% and improved data intake by 98%.",
+        "Engineered a scalable Angular and Node.js microservices architecture with WCS data integration, deploying an automated digitization banner that reduced manual processing overhead by 75%.",
+        "Developed and integrated an AI-powered chatbot leveraging predictive analytics and LLM APIs, boosting monthly active users by 40% and enhancing real-time customer support capabilities.",
+        "Led the migration of legacy Java Spring services to Node.js and NestJS microservices, establishing API security standards and improving system maintainability by 35%.",
+        "Collaborated with cross-functional teams in Agile sprints, conducting rigorous code reviews and optimizing CI/CD pipelines to achieve 99% deployment uptime."
+      ]
+    },
+    {
+      "id": "exp-2",
+      "company": "WaiGenie",
+      "role": "Founding Engineer",
+      "location": "Hyderabad, India",
+      "startDate": "Aug 2023",
+      "endDate": "Sep 2024",
+      "current": false,
+      "bullets": [
+        "Developed a full-stack SaaS platform for AI-powered software testing tools for QA engineers and development teams.",
+        "Built 5 AI testing tools: IdeaForge, AutoScribe, CucumberCraft, DomDetective, and WebTrekker.",
+        "Implemented credit-based billing with Razorpay payment integration and a full auth system with email/password and OAuth.",
+        "Designed a complete SaaS shell with marketing site, per-product landing pages, pricing page, and multi-currency pricing support."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-1",
+      "name": "ATS Precision",
+      "shortDesc": "AI-powered ATS resume evaluator with weighted scoring",
+      "description": "A deterministic ATS resume evaluator that scores a resume against a specific job description using a weighted algorithm across keyword match, skills alignment, section completeness, and formatting quality.",
+      "stack": ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS v4", "Supabase", "Drizzle ORM", "Zustand", "Framer Motion", "Zod", "Radix UI"],
+      "highlights": [
+        "Engineered deterministic ATS scoring with weighted breakdown across keyword, skills, structure, and formatting",
+        "Built keyword gap analysis highlighting missing critical terms and overused filler phrases",
+        "Implemented server-side PDF and DOCX resume parsing",
+        "Delivered section-by-section feedback with role-specific improvement suggestions ranked by impact",
+        "Enabled PDF evaluation report download via jsPDF + html2canvas"
+      ],
+      "category": "AI / SaaS",
+      "featured": true,
+      "liveUrl": "",
+      "githubUrl": "https://github.com/bharathlakkoju"
+    },
+    {
+      "id": "proj-2",
+      "name": "Flatmate",
+      "shortDesc": "Full-stack shared living management app with AI suggestions",
+      "description": "A collaborative household management app with expense tracking, grocery lists, meal planning with OCR receipt scanning, task management, and Google Gemini AI-powered household suggestions.",
+      "stack": ["Next.js 16", "React 19", "TypeScript", "Supabase", "Drizzle ORM", "Zustand", "OpenRouter AI", "Tesseract.js", "Framer Motion", "Playwright"],
+      "highlights": [
+        "Full auth with email + OAuth via Supabase",
+        "Expense tracker for splitting and logging household costs",
+        "OCR-powered receipt scanning (Tesseract.js) for automatic meal logging",
+        "Google Gemini AI for intelligent household suggestions",
+        "End-to-end testing with Playwright"
+      ],
+      "category": "Full Stack",
+      "featured": true,
+      "liveUrl": "",
+      "githubUrl": "https://github.com/bharathlakkoju"
+    },
+    {
+      "id": "proj-3",
+      "name": "Waigenie.tech",
+      "shortDesc": "SaaS platform for AI-powered software testing toolkit",
+      "description": "A production SaaS platform with 5 AI-powered testing tools for QA engineers, credit-based billing, and a full authentication system.",
+      "stack": ["Next.js", "React", "TypeScript", "Tailwind CSS", "Auth.js v5", "Prisma ORM", "PostgreSQL", "Zustand", "Razorpay", "Node.js"],
+      "highlights": [
+        "5 AI testing tools: IdeaForge, AutoScribe, CucumberCraft, DomDetective, WebTrekker",
+        "Credit-based billing with Razorpay payment integration",
+        "Full auth system with email/password, Google OAuth, GitHub OAuth, and password reset",
+        "Multi-currency pricing support",
+        "Complete SaaS marketing site with per-product landing pages"
+      ],
+      "category": "SaaS",
+      "featured": true,
+      "liveUrl": "https://waigenie.tech",
+      "githubUrl": "https://github.com/bharathlakkoju"
+    },
+    {
+      "id": "proj-4",
+      "name": "SwiftMedia",
+      "shortDesc": "Privacy-first browser-based media processing suite",
+      "description": "A privacy-first, browser-based media processing suite with zero server uploads. Supports image compression, video compression via FFmpeg/WebAssembly, PDF compression, and PDF merging.",
+      "stack": ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS v4", "FFmpeg (WASM)", "Vercel"],
+      "highlights": [
+        "Client-side image compression for JPEG, PNG, WebP — 65% size reduction",
+        "FFmpeg compiled to WebAssembly for in-browser video compression — 70% size reduction",
+        "PDF compression and merger running entirely client-side",
+        "Zero file uploads — full privacy guarantee"
+      ],
+      "category": "Tools",
+      "featured": false,
+      "liveUrl": "",
+      "githubUrl": "https://github.com/bharathlakkoju"
+    },
+    {
+      "id": "proj-5",
+      "name": "SalaryWise",
+      "shortDesc": "Salary benchmarks across roles, companies, and Indian cities",
+      "description": "A web application for job seekers to explore and compare salary benchmarks across roles, companies, and Indian cities, with an SEO-optimized blog.",
+      "stack": ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS v4", "Vercel"],
+      "highlights": [
+        "SEO-optimized blog with editorial salary insights — 45% organic traffic increase",
+        "Sitemap and robots.txt configuration — 50% improvement in crawlability",
+        "Google AdSense monetization integration",
+        "Fast, minimal UI focused on readability"
+      ],
+      "category": "Tools",
+      "featured": false,
+      "liveUrl": "",
+      "githubUrl": "https://github.com/bharathlakkoju"
+    },
+    {
+      "id": "proj-6",
+      "name": "FaviConverter",
+      "shortDesc": "Browser-native favicon toolkit with live preview",
+      "description": "A browser-native favicon toolkit that converts images to favicons entirely client-side with zero file uploads.",
+      "stack": ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS v4", "Vercel"],
+      "highlights": [
+        "Image-to-favicon converter supporting PNG/JPG/SVG to .ico — 80% faster",
+        "SVG-to-favicon and SVG-to-ICO converters",
+        "Live preview of generated favicons",
+        "Auto-generates .zip bundle with all required sizes (16×16 to 180×180)"
+      ],
+      "category": "Tools",
+      "featured": false,
+      "liveUrl": "",
+      "githubUrl": "https://github.com/bharathlakkoju"
+    }
+  ],
+  "skills": {
+    "languages": ["TypeScript", "JavaScript", "Python", "SQL", "C#", "C++"],
+    "frontend": ["React.js", "Next.js", "Redux", "Tailwind CSS", "Zustand", "Framer Motion", "HTML5/CSS3"],
+    "backend": ["Node.js", "Express.js", "NestJS", "RESTful APIs", "GraphQL", "Microservices"],
+    "databases": ["PostgreSQL", "MongoDB", "MySQL", "Prisma ORM", "Drizzle ORM", "Supabase"],
+    "aiml": ["OpenAI API", "Claude AI", "Gemini API", "LLM Integration", "RAG", "Predictive Analytics"],
+    "devops": ["CI/CD Pipelines", "Docker", "Git", "GitHub Actions", "Vercel", "JIRA", "Agile/Scrum"]
+  },
+  "education": [
+    {
+      "id": "edu-1",
+      "institution": "MVGR College of Engineering",
+      "degree": "B.Tech Information Technology",
+      "gpa": "8.10 / 10",
+      "year": "2020 – 2024"
+    }
+  ],
+  "achievements": [
+    "Deployed 8+ full-stack web and mobile applications serving 100+ active users with 75% uptime",
+    "Increased user engagement by 60% through innovative reward system implementation",
+    "Reduced operational costs by 75% through automated digitization banner component",
+    "Led frontend team of interns, mentoring on best practices and ensuring project delivery",
+    "Achieved 95% accuracy in AI-powered insurance recommendation system"
+  ]
+}
