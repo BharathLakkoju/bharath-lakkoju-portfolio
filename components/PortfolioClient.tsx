@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
 import { PortfolioData } from "@/types/portfolio";
 import Nav from "@/components/Nav";
 import HeroSection from "@/components/sections/HeroSection";
@@ -17,52 +17,20 @@ interface Props {
   data: PortfolioData;
 }
 
-export default function PortfolioClient({ data: initialData }: Props) {
-  const [data, setData] = useState(initialData);
+export default function PortfolioClient({ data }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [cursorVisible, setCursorVisible] = useState(false);
-
   const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-
-  useEffect(() => {
-    const handleMouse = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-      setCursorVisible(true);
-    };
-    const handleLeave = () => setCursorVisible(false);
-    window.addEventListener("mousemove", handleMouse);
-    window.addEventListener("mouseleave", handleLeave);
-    return () => {
-      window.removeEventListener("mousemove", handleMouse);
-      window.removeEventListener("mouseleave", handleLeave);
-    };
-  }, []);
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 32 });
 
   return (
-    <div ref={containerRef} style={{ position: "relative" }}>
+    <div
+      ref={containerRef}
+      style={{ position: "relative", background: "var(--bg)" }}
+    >
       {/* Scroll progress bar */}
-      <motion.div
-        className="scroll-progress"
-        style={{ scaleX }}
-      />
+      <motion.div className="scroll-progress" style={{ scaleX }} />
 
-      {/* Cursor glow */}
-      <AnimatePresence>
-        {cursorVisible && (
-          <motion.div
-            className="cursor-glow"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1, x: mousePos.x, y: mousePos.y }}
-            exit={{ opacity: 0 }}
-            transition={{ type: "spring", stiffness: 500, damping: 40 }}
-            style={{ position: "fixed", top: 0, left: 0, pointerEvents: "none", zIndex: 1 }}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Ambient background blobs */}
+      {/* Ambient background blobs — light theme tints */}
       <div className="ambient ambient-1 blob-float" />
       <div className="ambient ambient-2" style={{ animationDelay: "3s" }} />
       <div className="ambient ambient-3" style={{ animationDelay: "5s" }} />

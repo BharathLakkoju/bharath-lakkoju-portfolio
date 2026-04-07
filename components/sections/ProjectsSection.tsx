@@ -1,27 +1,78 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  useInView,
+  useScroll,
+  useTransform,
+  AnimatePresence,
+} from "framer-motion";
 import { Project } from "@/types/portfolio";
-import { ExternalLink, Code2, Star } from "lucide-react";
+import { ExternalLink, Code2, Star, ArrowUpRight } from "lucide-react";
 
 const categories = ["All", "AI / SaaS", "SaaS", "Full Stack", "Tools"];
 
+const categoryColors: Record<string, string> = {
+  "AI / SaaS": "rgba(79,70,229,0.08)",
+  SaaS: "rgba(249,115,22,0.08)",
+  "Full Stack": "rgba(5,150,105,0.08)",
+  Tools: "rgba(14,165,233,0.08)",
+};
+const categoryTextColors: Record<string, string> = {
+  "AI / SaaS": "var(--accent)",
+  SaaS: "var(--accent-2)",
+  "Full Stack": "var(--accent-3)",
+  Tools: "#0ea5e9",
+};
+
 export default function ProjectsSection({ projects }: { projects: Project[] }) {
+  const sectionRef = useRef<HTMLElement>(null);
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: "-60px" });
   const [filter, setFilter] = useState("All");
   const [hovered, setHovered] = useState<string | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const yDecor = useTransform(scrollYProgress, [0, 1], [-20, 80]);
 
-  const filtered = filter === "All" ? projects : projects.filter((p) => p.category === filter);
+  const filtered =
+    filter === "All" ? projects : projects.filter((p) => p.category === filter);
 
   return (
-    <section id="projects" style={{ padding: "120px 24px" }}>
+    <section
+      id="projects"
+      ref={sectionRef}
+      style={{
+        padding: "120px 24px",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* Parallax bg decoration */}
+      <motion.div
+        style={{
+          position: "absolute",
+          right: "-100px",
+          top: "20%",
+          width: 400,
+          height: 400,
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, rgba(249,115,22,0.05) 0%, transparent 70%)",
+          filter: "blur(60px)",
+          y: yDecor,
+          pointerEvents: "none",
+        }}
+      />
+
       <div style={{ maxWidth: 1200, margin: "0 auto" }} ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
           style={{ marginBottom: 48 }}
         >
           <span className="section-label">
@@ -41,14 +92,15 @@ export default function ProjectsSection({ projects }: { projects: Project[] }) {
             <h2
               style={{
                 fontFamily: "var(--font-display)",
-                fontWeight: 700,
+                fontWeight: 800,
                 fontSize: "clamp(28px, 4vw, 48px)",
                 letterSpacing: "-0.03em",
                 color: "var(--text)",
               }}
             >
-              Things I've built
+              Things I&apos;ve built
             </h2>
+
             {/* Filters */}
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
               {categories.map((cat) => (
@@ -56,19 +108,28 @@ export default function ProjectsSection({ projects }: { projects: Project[] }) {
                   key={cat}
                   onClick={() => setFilter(cat)}
                   whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.97 }}
+                  whileTap={{ scale: 0.96 }}
                   style={{
-                    padding: "6px 14px",
+                    padding: "6px 16px",
                     borderRadius: 99,
-                    border: "1px solid",
-                    borderColor: filter === cat ? "var(--accent)" : "var(--border)",
+                    border: "1.5px solid",
+                    borderColor:
+                      filter === cat ? "var(--accent)" : "var(--border)",
                     background:
-                      filter === cat ? "rgba(124,106,247,0.12)" : "rgba(255,255,255,0.02)",
-                    color: filter === cat ? "var(--accent)" : "var(--text-muted)",
+                      filter === cat
+                        ? "rgba(79,70,229,0.09)"
+                        : "var(--surface)",
+                    color:
+                      filter === cat ? "var(--accent)" : "var(--text-muted)",
                     fontSize: 12,
                     fontFamily: "var(--font-body)",
                     cursor: "pointer",
                     transition: "all 0.2s",
+                    fontWeight: filter === cat ? 600 : 400,
+                    boxShadow:
+                      filter === cat
+                        ? "0 2px 8px rgba(79,70,229,0.15)"
+                        : "var(--shadow-sm)",
                   }}
                 >
                   {cat}
@@ -95,40 +156,61 @@ export default function ProjectsSection({ projects }: { projects: Project[] }) {
                 initial={{ opacity: 0, scale: 0.92, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.88, y: -10 }}
-                transition={{ duration: 0.45, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] }}
+                transition={{
+                  duration: 0.45,
+                  delay: i * 0.07,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
                 onHoverStart={() => setHovered(project.id)}
                 onHoverEnd={() => setHovered(null)}
                 style={{ position: "relative" }}
               >
-                <div
-                  className="glass-card"
+                <motion.div
+                  className="light-card"
                   style={{
-                    borderRadius: 18,
+                    borderRadius: 20,
                     padding: "28px",
                     height: "100%",
                     display: "flex",
                     flexDirection: "column",
-                    gap: 20,
+                    gap: 18,
                     position: "relative",
                     overflow: "hidden",
                     cursor: "default",
                   }}
+                  whileHover={{ y: -4, boxShadow: "var(--shadow-lg)" }}
+                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  {/* Hover glow */}
+                  {/* Top color bar */}
                   <motion.div
-                    animate={{
-                      opacity: hovered === project.id ? 1 : 0,
+                    animate={{ scaleX: hovered === project.id ? 1 : 0 }}
+                    initial={{ scaleX: 0 }}
+                    transition={{ duration: 0.3 }}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: 3,
+                      background: "var(--gradient-1)",
+                      transformOrigin: "left",
                     }}
+                  />
+
+                  {/* Hover bg glow */}
+                  <motion.div
+                    animate={{ opacity: hovered === project.id ? 1 : 0 }}
+                    transition={{ duration: 0.3 }}
                     style={{
                       position: "absolute",
                       inset: 0,
                       background:
-                        "radial-gradient(ellipse at 50% 0%, rgba(124,106,247,0.1) 0%, transparent 70%)",
+                        "radial-gradient(ellipse at 50% 0%, rgba(79,70,229,0.04) 0%, transparent 70%)",
                       pointerEvents: "none",
                     }}
                   />
 
-                  {/* Header */}
+                  {/* Header row */}
                   <div
                     style={{
                       display: "flex",
@@ -136,19 +218,47 @@ export default function ProjectsSection({ projects }: { projects: Project[] }) {
                       alignItems: "flex-start",
                     }}
                   >
-                    <div style={{ flex: 1 }}>
+                    <div style={{ flex: 1, paddingRight: 12 }}>
+                      {/* Category badge */}
+                      <div
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 4,
+                          fontSize: 10,
+                          padding: "3px 10px",
+                          borderRadius: 99,
+                          background:
+                            categoryColors[project.category] ??
+                            "rgba(79,70,229,0.06)",
+                          color:
+                            categoryTextColors[project.category] ??
+                            "var(--accent)",
+                          letterSpacing: "0.08em",
+                          fontFamily: "var(--font-body)",
+                          fontWeight: 500,
+                          marginBottom: 10,
+                          border: "1px solid",
+                          borderColor:
+                            categoryTextColors[project.category] ??
+                            "var(--accent)",
+                          opacity: 0.85,
+                        }}
+                      >
+                        {project.category}
+                      </div>
                       <div
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          gap: 8,
+                          gap: 7,
                           marginBottom: 8,
                         }}
                       >
                         <span
                           style={{
                             fontFamily: "var(--font-display)",
-                            fontWeight: 700,
+                            fontWeight: 800,
                             fontSize: 18,
                             letterSpacing: "-0.02em",
                             color: "var(--text)",
@@ -159,24 +269,54 @@ export default function ProjectsSection({ projects }: { projects: Project[] }) {
                         {project.featured && (
                           <Star
                             size={12}
-                            style={{ color: "var(--accent-2)", fill: "var(--accent-2)" }}
+                            style={{
+                              color: "var(--accent-2)",
+                              fill: "var(--accent-2)",
+                              flexShrink: 0,
+                            }}
                           />
                         )}
                       </div>
-                      <p style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.6 }}>
+                      <p
+                        style={{
+                          fontSize: 13,
+                          color: "var(--text-muted)",
+                          lineHeight: 1.65,
+                        }}
+                      >
                         {project.shortDesc}
                       </p>
                     </div>
-                    <div style={{ display: "flex", gap: 8, marginLeft: 12 }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 6,
+                        flexShrink: 0,
+                      }}
+                    >
                       {project.githubUrl && (
                         <motion.a
                           href={project.githubUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          whileHover={{ scale: 1.1, color: "var(--accent)" }}
-                          style={{ color: "var(--text-subtle)", textDecoration: "none" }}
+                          whileHover={{ scale: 1.15, color: "var(--accent)" }}
+                          whileTap={{ scale: 0.9 }}
+                          style={{
+                            width: 34,
+                            height: 34,
+                            borderRadius: 10,
+                            border: "1px solid var(--border)",
+                            background: "var(--bg-2)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "var(--text-subtle)",
+                            textDecoration: "none",
+                          }}
+                          title="GitHub"
                         >
-                          <Code2 size={16} />
+                          <Code2 size={14} />
                         </motion.a>
                       )}
                       {project.liveUrl && (
@@ -184,10 +324,23 @@ export default function ProjectsSection({ projects }: { projects: Project[] }) {
                           href={project.liveUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          whileHover={{ scale: 1.1, color: "var(--accent)" }}
-                          style={{ color: "var(--text-subtle)", textDecoration: "none" }}
+                          whileHover={{ scale: 1.15, color: "var(--accent)" }}
+                          whileTap={{ scale: 0.9 }}
+                          style={{
+                            width: 34,
+                            height: 34,
+                            borderRadius: 10,
+                            border: "1px solid var(--border)",
+                            background: "var(--bg-2)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "var(--text-subtle)",
+                            textDecoration: "none",
+                          }}
+                          title="Live Demo"
                         >
-                          <ExternalLink size={16} />
+                          <ArrowUpRight size={14} />
                         </motion.a>
                       )}
                     </div>
@@ -208,19 +361,19 @@ export default function ProjectsSection({ projects }: { projects: Project[] }) {
                         key={j}
                         style={{
                           display: "flex",
-                          gap: 8,
+                          gap: 9,
                           alignItems: "flex-start",
                           fontSize: 12,
                           color: "var(--text-muted)",
-                          lineHeight: 1.6,
+                          lineHeight: 1.65,
                         }}
                       >
                         <span
                           style={{
-                            width: 3,
-                            height: 3,
+                            width: 5,
+                            height: 5,
                             borderRadius: "50%",
-                            background: "var(--accent)",
+                            background: "var(--gradient-1)",
                             flexShrink: 0,
                             marginTop: 7,
                           }}
@@ -231,38 +384,26 @@ export default function ProjectsSection({ projects }: { projects: Project[] }) {
                   </ul>
 
                   {/* Stack tags */}
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
                     {project.stack.slice(0, 5).map((tech) => (
                       <span key={tech} className="tag">
                         {tech}
                       </span>
                     ))}
                     {project.stack.length > 5 && (
-                      <span className="tag" style={{ color: "var(--accent)" }}>
+                      <span
+                        className="tag"
+                        style={{
+                          color: "var(--accent)",
+                          borderColor: "rgba(79,70,229,0.2)",
+                          background: "rgba(79,70,229,0.05)",
+                        }}
+                      >
                         +{project.stack.length - 5}
                       </span>
                     )}
                   </div>
-
-                  {/* Category badge */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 20,
-                      right: 56,
-                      fontSize: 10,
-                      padding: "2px 8px",
-                      borderRadius: 99,
-                      background: "rgba(124,106,247,0.1)",
-                      border: "1px solid rgba(124,106,247,0.2)",
-                      color: "var(--accent)",
-                      letterSpacing: "0.08em",
-                      fontFamily: "var(--font-body)",
-                    }}
-                  >
-                    {project.category}
-                  </div>
-                </div>
+                </motion.div>
               </motion.div>
             ))}
           </AnimatePresence>

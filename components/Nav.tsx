@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useMotionValueEvent,
+} from "framer-motion";
 
 const navItems = [
   { label: "About", href: "#about" },
@@ -15,12 +20,9 @@ export default function Nav({ name }: { name: string }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("");
+  const { scrollY } = useScroll();
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 60));
 
   const initials = name
     .split(" ")
@@ -32,20 +34,19 @@ export default function Nav({ name }: { name: string }) {
       <motion.header
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         style={{
           position: "fixed",
           top: 0,
           left: 0,
           right: 0,
           zIndex: 100,
-          padding: "16px 0",
-          transition: "background 0.3s",
-          background: scrolled
-            ? "rgba(10,10,15,0.85)"
-            : "transparent",
-          backdropFilter: scrolled ? "blur(20px)" : "none",
-          borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "none",
+          padding: "14px 0",
+          background: scrolled ? "rgba(248,248,251,0.92)" : "transparent",
+          backdropFilter: scrolled ? "blur(24px)" : "none",
+          borderBottom: scrolled ? "1px solid rgba(79,70,229,0.1)" : "none",
+          transition: "background 0.3s, border-color 0.3s, box-shadow 0.3s",
+          boxShadow: scrolled ? "0 1px 16px rgba(79,70,229,0.06)" : "none",
         }}
       >
         <nav
@@ -67,9 +68,9 @@ export default function Nav({ name }: { name: string }) {
               gap: 10,
               textDecoration: "none",
             }}
-            whileHover={{ scale: 1.02 }}
+            whileHover={{ scale: 1.03 }}
           >
-            <div
+            <motion.div
               style={{
                 width: 36,
                 height: 36,
@@ -83,14 +84,17 @@ export default function Nav({ name }: { name: string }) {
                 fontFamily: "var(--font-display)",
                 color: "#fff",
                 letterSpacing: "-0.02em",
+                boxShadow: "0 2px 12px rgba(79,70,229,0.3)",
               }}
+              whileHover={{ rotate: 5 }}
+              transition={{ type: "spring", stiffness: 300 }}
             >
               {initials}
-            </div>
+            </motion.div>
             <span
               style={{
                 fontFamily: "var(--font-display)",
-                fontWeight: 600,
+                fontWeight: 700,
                 fontSize: 15,
                 color: "var(--text)",
                 letterSpacing: "-0.02em",
@@ -102,11 +106,7 @@ export default function Nav({ name }: { name: string }) {
 
           {/* Desktop nav */}
           <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 4,
-            }}
+            style={{ display: "flex", alignItems: "center", gap: 2 }}
             className="hidden-mobile"
           >
             {navItems.map((item) => (
@@ -114,7 +114,8 @@ export default function Nav({ name }: { name: string }) {
                 key={item.href}
                 href={item.href}
                 style={{
-                  padding: "6px 14px",
+                  position: "relative",
+                  padding: "7px 14px",
                   borderRadius: 8,
                   textDecoration: "none",
                   fontFamily: "var(--font-display)",
@@ -122,42 +123,57 @@ export default function Nav({ name }: { name: string }) {
                   fontWeight: 500,
                   color:
                     active === item.href
-                      ? "var(--text)"
+                      ? "var(--accent)"
                       : "var(--text-muted)",
                   transition: "color 0.2s",
                   letterSpacing: "-0.01em",
                 }}
-                whileHover={{
-                  color: "var(--text)",
-                  backgroundColor: "rgba(255,255,255,0.05)",
-                }}
+                whileHover={{ color: "var(--accent)" }}
                 onClick={() => setActive(item.href)}
               >
                 {item.label}
+                {active === item.href && (
+                  <motion.span
+                    layoutId="nav-active"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      borderRadius: 8,
+                      background: "rgba(79,70,229,0.08)",
+                    }}
+                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                  />
+                )}
               </motion.a>
             ))}
 
             <motion.a
+              href={`mailto:lbh.lbharath@gmail.com`}
               style={{
                 display: "flex",
                 alignItems: "center",
                 gap: 6,
-                padding: "6px 14px",
-                borderRadius: 8,
-                border: "1px solid var(--border)",
+                padding: "7px 16px",
+                borderRadius: 99,
+                border: "1.5px solid var(--border)",
                 textDecoration: "none",
                 fontFamily: "var(--font-display)",
                 fontSize: 12,
-                fontWeight: 500,
-                color: "var(--text-muted)",
-                marginLeft: 8,
+                fontWeight: 600,
+                color: "var(--accent)",
+                marginLeft: 10,
                 letterSpacing: "-0.01em",
+                background: "rgba(79,70,229,0.05)",
+                boxShadow: "var(--shadow-sm)",
               }}
               whileHover={{
                 borderColor: "var(--accent)",
-                color: "var(--accent)",
+                background: "rgba(79,70,229,0.1)",
+                scale: 1.04,
               }}
+              whileTap={{ scale: 0.97 }}
             >
+              Hire Me
             </motion.a>
           </div>
 
@@ -186,7 +202,7 @@ export default function Nav({ name }: { name: string }) {
               <motion.span
                 style={{
                   display: "block",
-                  height: 1.5,
+                  height: 2,
                   background: "var(--text)",
                   borderRadius: 2,
                   transformOrigin: "left",
@@ -196,7 +212,7 @@ export default function Nav({ name }: { name: string }) {
               <motion.span
                 style={{
                   display: "block",
-                  height: 1.5,
+                  height: 2,
                   background: "var(--text)",
                   borderRadius: 2,
                 }}
@@ -205,7 +221,7 @@ export default function Nav({ name }: { name: string }) {
               <motion.span
                 style={{
                   display: "block",
-                  height: 1.5,
+                  height: 2,
                   background: "var(--text)",
                   borderRadius: 2,
                   transformOrigin: "left",
@@ -221,63 +237,52 @@ export default function Nav({ name }: { name: string }) {
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -16, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -16, scale: 0.97 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             style={{
               position: "fixed",
-              top: 65,
+              top: 68,
               left: 16,
               right: 16,
-              background: "rgba(17,17,24,0.98)",
-              backdropFilter: "blur(30px)",
-              borderRadius: 16,
+              background: "rgba(255,255,255,0.97)",
+              backdropFilter: "blur(24px)",
+              borderRadius: 18,
               border: "1px solid var(--border)",
-              padding: 20,
+              padding: "16px 12px",
               zIndex: 99,
               display: "flex",
               flexDirection: "column",
               gap: 4,
+              boxShadow: "0 8px 40px rgba(79,70,229,0.12)",
             }}
           >
             {navItems.map((item, i) => (
               <motion.a
                 key={item.href}
                 href={item.href}
-                initial={{ opacity: 0, x: -10 }}
+                initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.06 }}
                 onClick={() => setOpen(false)}
                 style={{
                   padding: "12px 16px",
-                  borderRadius: 8,
+                  borderRadius: 10,
                   textDecoration: "none",
                   fontFamily: "var(--font-display)",
                   fontSize: 15,
                   fontWeight: 500,
                   color: "var(--text-muted)",
                 }}
+                whileHover={{
+                  color: "var(--accent)",
+                  background: "rgba(79,70,229,0.06)",
+                }}
               >
                 {item.label}
               </motion.a>
             ))}
-            <a
-              style={{
-                padding: "12px 16px",
-                borderRadius: 8,
-                textDecoration: "none",
-                fontFamily: "var(--font-display)",
-                fontSize: 14,
-                fontWeight: 500,
-                color: "var(--accent)",
-                marginTop: 8,
-                borderTop: "1px solid var(--border)",
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-              }}
-            >
-            </a>
           </motion.div>
         )}
       </AnimatePresence>

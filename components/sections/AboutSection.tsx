@@ -1,13 +1,17 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { Meta } from "@/types/portfolio";
-import { MapPin, Trophy } from "lucide-react";
+import { MapPin, Trophy, Sparkles } from "lucide-react";
 
 const fadeUp = (delay = 0) => ({
   hidden: { opacity: 0, y: 40 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] },
+  },
 });
 
 export default function AboutSection({
@@ -17,22 +21,50 @@ export default function AboutSection({
   meta: Meta;
   achievements: string[];
 }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const ref = useRef<HTMLElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const yDecor = useTransform(scrollYProgress, [0, 1], [-30, 60]);
 
   const stats = [
-    { value: "2+", label: "Years Experience" },
-    { value: "8+", label: "Apps Deployed" },
-    { value: "60%", label: "Engagement Boost" },
-    { value: "99%", label: "Uptime Achieved" },
+    { value: "2+", label: "Years Experience", color: "var(--accent)" },
+    { value: "8+", label: "Apps Deployed", color: "var(--accent-2)" },
+    { value: "60%", label: "Engagement Boost", color: "var(--accent-3)" },
+    { value: "99%", label: "Uptime Achieved", color: "var(--accent)" },
   ];
 
   return (
     <section
       id="about"
       ref={ref}
-      style={{ padding: "120px 24px", maxWidth: 1200, margin: "0 auto" }}
+      style={{
+        padding: "120px 24px",
+        maxWidth: 1200,
+        margin: "0 auto",
+        position: "relative",
+        overflow: "hidden",
+      }}
     >
+      {/* Parallax decoration */}
+      <motion.div
+        style={{
+          position: "absolute",
+          top: "10%",
+          right: "-80px",
+          width: 300,
+          height: 300,
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, rgba(79,70,229,0.06) 0%, transparent 70%)",
+          filter: "blur(40px)",
+          y: yDecor,
+          pointerEvents: "none",
+        }}
+      />
+
       {/* Section header */}
       <motion.div
         initial="hidden"
@@ -63,7 +95,7 @@ export default function AboutSection({
             variants={fadeUp(0.1)}
             style={{
               fontFamily: "var(--font-display)",
-              fontWeight: 700,
+              fontWeight: 800,
               fontSize: "clamp(28px, 4vw, 48px)",
               lineHeight: 1.1,
               letterSpacing: "-0.03em",
@@ -72,7 +104,10 @@ export default function AboutSection({
             }}
           >
             Building things that{" "}
-            <span className="gradient-text font-serif" style={{ fontStyle: "italic" }}>
+            <span
+              className="gradient-text font-serif"
+              style={{ fontStyle: "italic" }}
+            >
               matter
             </span>
           </motion.h2>
@@ -96,15 +131,19 @@ export default function AboutSection({
             animate={inView ? "show" : "hidden"}
             variants={fadeUp(0.25)}
             style={{
-              display: "flex",
+              display: "inline-flex",
               alignItems: "center",
               gap: 6,
               color: "var(--text-subtle)",
               marginBottom: 40,
-              fontSize: 13,
+              fontSize: 12,
+              padding: "5px 12px",
+              borderRadius: 99,
+              border: "1px solid var(--border)",
+              background: "var(--bg-2)",
             }}
           >
-            <MapPin size={13} />
+            <MapPin size={12} style={{ color: "var(--accent)" }} />
             <span>{meta.location}</span>
           </motion.div>
 
@@ -116,33 +155,60 @@ export default function AboutSection({
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(2, 1fr)",
-              gap: 16,
+              gap: 12,
             }}
           >
             {stats.map((stat, i) => (
               <motion.div
                 key={stat.label}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={inView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ delay: 0.4 + i * 0.08, duration: 0.5 }}
-                className="glass-card"
-                style={{ borderRadius: 12, padding: "20px 24px" }}
+                initial={{ opacity: 0, scale: 0.88, y: 16 }}
+                animate={inView ? { opacity: 1, scale: 1, y: 0 } : {}}
+                transition={{
+                  delay: 0.38 + i * 0.09,
+                  duration: 0.55,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="light-card"
+                style={{
+                  borderRadius: 14,
+                  padding: "20px 22px",
+                  cursor: "default",
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+                whileHover={{ y: -3, boxShadow: "var(--shadow-lg)" }}
               >
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: 3,
+                    background: stat.color,
+                    borderRadius: "14px 14px 0 0",
+                  }}
+                />
                 <div
                   style={{
                     fontFamily: "var(--font-display)",
                     fontWeight: 800,
-                    fontSize: 32,
+                    fontSize: 30,
                     letterSpacing: "-0.04em",
-                    background: "var(--gradient-1)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
+                    color: stat.color,
+                    lineHeight: 1,
+                    marginBottom: 6,
                   }}
                 >
                   {stat.value}
                 </div>
-                <div style={{ fontSize: 12, color: "var(--text-subtle)", marginTop: 4 }}>
+                <div
+                  style={{
+                    fontSize: 11,
+                    color: "var(--text-subtle)",
+                    fontFamily: "var(--font-body)",
+                  }}
+                >
                   {stat.label}
                 </div>
               </motion.div>
@@ -155,7 +221,7 @@ export default function AboutSection({
           <motion.div
             initial="hidden"
             animate={inView ? "show" : "hidden"}
-            variants={fadeUp(0.2)}
+            variants={fadeUp(0.15)}
             style={{ marginBottom: 24 }}
           >
             <div
@@ -166,46 +232,77 @@ export default function AboutSection({
                 marginBottom: 20,
               }}
             >
-              <Trophy size={14} style={{ color: "var(--accent-2)" }} />
+              <div
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 10,
+                  background: "rgba(249,115,22,0.1)",
+                  border: "1px solid rgba(249,115,22,0.2)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Trophy size={14} style={{ color: "var(--accent-2)" }} />
+              </div>
               <span
                 style={{
                   fontFamily: "var(--font-display)",
-                  fontWeight: 600,
-                  fontSize: 14,
+                  fontWeight: 700,
+                  fontSize: 15,
                   color: "var(--text)",
                 }}
               >
                 Awards & Recognition
               </span>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {achievements.map((a, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, x: 20 }}
+                  initial={{ opacity: 0, x: 24 }}
                   animate={inView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.3 + i * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{
+                    delay: 0.25 + i * 0.09,
+                    duration: 0.55,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  className="light-card"
                   style={{
                     display: "flex",
                     gap: 12,
                     padding: "14px 16px",
-                    borderRadius: 10,
-                    background: "rgba(255,255,255,0.02)",
-                    border: "1px solid var(--border)",
+                    borderRadius: 12,
                     alignItems: "flex-start",
+                    cursor: "default",
                   }}
+                  whileHover={{ x: 4, borderColor: "var(--border-hover)" }}
                 >
+                  <div
+                    style={{
+                      width: 22,
+                      height: 22,
+                      borderRadius: 6,
+                      background: `rgba(79,70,229,${0.06 + (i % 3) * 0.04})`,
+                      border: "1px solid rgba(79,70,229,0.15)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      marginTop: 1,
+                    }}
+                  >
+                    <Sparkles size={10} style={{ color: "var(--accent)" }} />
+                  </div>
                   <span
                     style={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: "50%",
-                      background: "var(--gradient-1)",
-                      flexShrink: 0,
-                      marginTop: 7,
+                      fontSize: 13,
+                      color: "var(--text-muted)",
+                      lineHeight: 1.65,
                     }}
-                  />
-                  <span style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.6 }}>
+                  >
                     {a}
                   </span>
                 </motion.div>
@@ -214,12 +311,6 @@ export default function AboutSection({
           </motion.div>
         </div>
       </div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .about-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
-        }
-      `}</style>
     </section>
   );
 }

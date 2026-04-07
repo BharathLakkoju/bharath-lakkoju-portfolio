@@ -1,27 +1,109 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { Meta } from "@/types/portfolio";
-import { Mail, Code2, Link2, MapPin, Phone } from "lucide-react";
+import { Mail, Code2, Link2, MapPin, Phone, Send } from "lucide-react";
 
 export default function ContactSection({ meta }: { meta: Meta }) {
+  const sectionRef = useRef<HTMLElement>(null);
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const yDecor1 = useTransform(scrollYProgress, [0, 1], [-40, 60]);
+  const yDecor2 = useTransform(scrollYProgress, [0, 1], [20, -50]);
 
   return (
     <section
       id="contact"
+      ref={sectionRef}
       style={{
         padding: "120px 24px",
-        background: "linear-gradient(180deg, transparent 0%, rgba(124,106,247,0.04) 50%, transparent 100%)",
+        position: "relative",
+        overflow: "hidden",
+        background:
+          "linear-gradient(160deg, #f0efff 0%, #f7f7fb 50%, #fff7f2 100%)",
       }}
     >
-      <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }} ref={ref}>
+      {/* Parallax decorations */}
+      <motion.div
+        style={{
+          position: "absolute",
+          left: "-60px",
+          top: "10%",
+          width: 360,
+          height: 360,
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, rgba(79,70,229,0.08) 0%, transparent 70%)",
+          filter: "blur(60px)",
+          y: yDecor1,
+          pointerEvents: "none",
+        }}
+      />
+      <motion.div
+        style={{
+          position: "absolute",
+          right: "-80px",
+          bottom: "15%",
+          width: 280,
+          height: 280,
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, rgba(249,115,22,0.07) 0%, transparent 70%)",
+          filter: "blur(50px)",
+          y: yDecor2,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Decorative shapes */}
+      <motion.div
+        className="blob-float"
+        style={{
+          position: "absolute",
+          top: "18%",
+          right: "12%",
+          width: 56,
+          height: 56,
+          borderRadius: 14,
+          background: "rgba(79,70,229,0.08)",
+          border: "1px solid rgba(79,70,229,0.15)",
+          y: yDecor1,
+        }}
+      />
+      <motion.div
+        style={{
+          position: "absolute",
+          bottom: "22%",
+          left: "8%",
+          width: 36,
+          height: 36,
+          borderRadius: "50%",
+          background: "rgba(5,150,105,0.1)",
+          border: "1px solid rgba(5,150,105,0.2)",
+          animation: "float 8s ease-in-out infinite",
+          y: yDecor2,
+        }}
+      />
+
+      <div
+        style={{
+          maxWidth: 720,
+          margin: "0 auto",
+          textAlign: "center",
+          position: "relative",
+          zIndex: 2,
+        }}
+        ref={ref}
+      >
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
         >
           <span className="section-label">
             <span className="accent-line" />
@@ -37,10 +119,14 @@ export default function ContactSection({ meta }: { meta: Meta }) {
               lineHeight: 1.0,
               marginTop: 24,
               marginBottom: 20,
+              color: "var(--text)",
             }}
           >
-            Let's build something{" "}
-            <span className="gradient-text font-serif" style={{ fontStyle: "italic" }}>
+            Let&apos;s build something{" "}
+            <span
+              className="gradient-text font-serif"
+              style={{ fontStyle: "italic" }}
+            >
               together
             </span>
           </h2>
@@ -49,49 +135,62 @@ export default function ContactSection({ meta }: { meta: Meta }) {
             style={{
               color: "var(--text-muted)",
               fontSize: 15,
-              lineHeight: 1.8,
-              maxWidth: 520,
+              lineHeight: 1.85,
+              maxWidth: 500,
               margin: "0 auto 48px",
             }}
           >
-            I'm actively seeking SDE-1, SDE-2, Full Stack, and AI Engineer roles. 
-            Open to full-time positions at product companies and MNCs in India.
+            I&apos;m actively seeking SDE-1, SDE-2, Full Stack, and AI Engineer
+            roles. Open to full-time positions at product companies and MNCs in
+            India.
           </p>
 
           {/* Primary CTA */}
-          <motion.a
-            href={`mailto:${meta.email}`}
-            whileHover={{ scale: 1.04, boxShadow: "0 0 60px rgba(124,106,247,0.4)" }}
-            whileTap={{ scale: 0.97 }}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 10,
-              padding: "16px 36px",
-              borderRadius: 99,
-              background: "var(--gradient-1)",
-              color: "#fff",
-              textDecoration: "none",
-              fontFamily: "var(--font-display)",
-              fontWeight: 700,
-              fontSize: 16,
-              letterSpacing: "-0.01em",
-              boxShadow: "0 0 40px rgba(124,106,247,0.3)",
-              marginBottom: 48,
-            }}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={inView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ delay: 0.2, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+            style={{ marginBottom: 40 }}
           >
-            <Mail size={18} />
-            {meta.email}
-          </motion.a>
+            <motion.a
+              href={`mailto:${meta.email}`}
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0 12px 40px rgba(79,70,229,0.35)",
+              }}
+              whileTap={{ scale: 0.97 }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "16px 36px",
+                borderRadius: 99,
+                background: "var(--gradient-1)",
+                color: "#fff",
+                textDecoration: "none",
+                fontFamily: "var(--font-display)",
+                fontWeight: 700,
+                fontSize: 16,
+                letterSpacing: "-0.01em",
+                boxShadow: "0 6px 28px rgba(79,70,229,0.3)",
+              }}
+            >
+              <Send size={17} />
+              {meta.email}
+            </motion.a>
+          </motion.div>
 
           {/* Contact info row */}
-          <div
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.3, duration: 0.6 }}
             style={{
               display: "flex",
               justifyContent: "center",
-              gap: 24,
+              gap: 20,
               flexWrap: "wrap",
-              marginBottom: 48,
+              marginBottom: 40,
             }}
           >
             {[
@@ -106,16 +205,26 @@ export default function ContactSection({ meta }: { meta: Meta }) {
                   gap: 6,
                   color: "var(--text-muted)",
                   fontSize: 13,
+                  padding: "6px 14px",
+                  borderRadius: 99,
+                  background: "rgba(255,255,255,0.7)",
+                  border: "1px solid var(--border)",
+                  backdropFilter: "blur(8px)",
                 }}
               >
                 <Icon size={13} style={{ color: "var(--accent)" }} />
                 {label}
               </div>
             ))}
-          </div>
+          </motion.div>
 
           {/* Social links */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 12 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.4, duration: 0.6 }}
+            style={{ display: "flex", justifyContent: "center", gap: 10 }}
+          >
             {[
               { href: meta.github, icon: Code2, label: "GitHub" },
               { href: meta.linkedin, icon: Link2, label: "LinkedIn" },
@@ -125,32 +234,33 @@ export default function ContactSection({ meta }: { meta: Meta }) {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="light-card"
                 whileHover={{
                   scale: 1.05,
-                  borderColor: "var(--accent)",
-                  color: "var(--accent)",
+                  y: -2,
+                  borderColor: "var(--border-hover)",
+                  boxShadow: "var(--shadow-md)",
                 }}
+                whileTap={{ scale: 0.97 }}
                 style={{
                   display: "flex",
                   alignItems: "center",
                   gap: 8,
-                  padding: "10px 20px",
+                  padding: "10px 22px",
                   borderRadius: 12,
-                  border: "1px solid var(--border)",
                   color: "var(--text-muted)",
                   textDecoration: "none",
                   fontFamily: "var(--font-display)",
                   fontSize: 13,
-                  fontWeight: 500,
-                  background: "rgba(255,255,255,0.03)",
-                  transition: "all 0.2s",
+                  fontWeight: 600,
+                  letterSpacing: "-0.01em",
                 }}
               >
                 <Icon size={15} />
                 {label}
               </motion.a>
             ))}
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>

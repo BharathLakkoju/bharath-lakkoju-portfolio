@@ -1,24 +1,35 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Meta } from "@/types/portfolio";
-import { ArrowDown, Code2, Link2, Mail } from "lucide-react";
+import { ArrowDown, Code2, Link2, Mail, MapPin } from "lucide-react";
+
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.09 } },
+};
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 40 },
   show: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+    transition: { delay: i * 0.09, duration: 0.75, ease: [0.16, 1, 0.3, 1] },
   }),
 };
 
 export default function HeroSection({ meta }: { meta: Meta }) {
   const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 150]);
-  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+  const yContent = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const yBg1 = useTransform(scrollYProgress, [0, 1], [0, -60]);
+  const yBg2 = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const opacity = useTransform(scrollYProgress, [0, 0.65], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
 
   return (
     <section
@@ -32,30 +43,114 @@ export default function HeroSection({ meta }: { meta: Meta }) {
         position: "relative",
         overflow: "hidden",
         padding: "120px 24px 80px",
+        background:
+          "linear-gradient(160deg, #f0efff 0%, #f7f7fb 40%, #fff7f2 100%)",
       }}
     >
-      {/* Grid background */}
-      <div
+      {/* Dot grid — parallax layer 1 */}
+      <motion.div className="dot-grid" style={{ y: yBg1, scale }} />
+
+      {/* Hero grid lines — parallax layer 2 */}
+      <motion.div className="hero-grid" style={{ y: yBg2 }} />
+
+      {/* Decorative floating blobs */}
+      <motion.div
+        className="blob-float"
         style={{
           position: "absolute",
-          inset: 0,
-          backgroundImage: `
-            linear-gradient(rgba(124,106,247,0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(124,106,247,0.04) 1px, transparent 1px)
-          `,
-          backgroundSize: "80px 80px",
-          maskImage: "radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%)",
+          top: "12%",
+          right: "8%",
+          width: 320,
+          height: 320,
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, rgba(79,70,229,0.08) 0%, transparent 70%)",
+          filter: "blur(48px)",
+          y: yBg1,
+        }}
+      />
+      <motion.div
+        style={{
+          position: "absolute",
+          bottom: "15%",
+          left: "5%",
+          width: 280,
+          height: 280,
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, rgba(249,115,22,0.07) 0%, transparent 70%)",
+          filter: "blur(60px)",
+          y: yBg2,
         }}
       />
 
+      {/* Floating geometric accent shapes */}
       <motion.div
-        style={{ y, opacity }}
+        className="blob-float"
+        initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
+        animate={{ opacity: 1, scale: 1, rotate: 0 }}
+        transition={{ delay: 1.0, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        style={{
+          position: "absolute",
+          top: "20%",
+          right: "15%",
+          width: 64,
+          height: 64,
+          borderRadius: 16,
+          background:
+            "linear-gradient(135deg, rgba(79,70,229,0.15) 0%, rgba(124,58,237,0.1) 100%)",
+          border: "1px solid rgba(79,70,229,0.2)",
+          y: yBg1,
+        }}
+      />
+      <motion.div
+        style={{
+          position: "absolute",
+          bottom: "28%",
+          left: "12%",
+          width: 44,
+          height: 44,
+          borderRadius: "50%",
+          background:
+            "linear-gradient(135deg, rgba(249,115,22,0.18) 0%, rgba(234,88,12,0.1) 100%)",
+          border: "1px solid rgba(249,115,22,0.2)",
+          y: yBg2,
+        }}
+      />
+      <motion.div
+        className="blob-float"
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 1.2, duration: 0.8 }}
+        style={{
+          position: "absolute",
+          top: "55%",
+          right: "6%",
+          width: 28,
+          height: 28,
+          borderRadius: 6,
+          background: "rgba(5,150,105,0.15)",
+          border: "1px solid rgba(5,150,105,0.25)",
+          y: yBg2,
+        }}
+      />
+
+      {/* Main content with vertical parallax */}
+      <motion.div
+        style={{ y: yContent, opacity }}
         initial="hidden"
         animate="show"
-        variants={{ show: { transition: { staggerChildren: 0.08 } } }}
-        className="hero-content"
+        variants={container}
       >
-        <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
+        <div
+          style={{
+            maxWidth: 860,
+            margin: "0 auto",
+            textAlign: "center",
+            position: "relative",
+            zIndex: 2,
+          }}
+        >
           {/* Availability badge */}
           <motion.div
             variants={fadeUp}
@@ -64,21 +159,21 @@ export default function HeroSection({ meta }: { meta: Meta }) {
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
-              padding: "6px 16px",
+              padding: "7px 18px",
               borderRadius: 99,
-              border: "1px solid rgba(106,247,200,0.3)",
-              background: "rgba(106,247,200,0.06)",
+              border: "1px solid rgba(5,150,105,0.25)",
+              background: "rgba(5,150,105,0.06)",
               marginBottom: 40,
             }}
           >
             <span
+              className="pulse-dot"
               style={{
                 width: 7,
                 height: 7,
                 borderRadius: "50%",
                 background: "var(--accent-3)",
                 display: "inline-block",
-                animation: "pulse 2s ease-in-out infinite",
               }}
             />
             <span
@@ -100,10 +195,10 @@ export default function HeroSection({ meta }: { meta: Meta }) {
             style={{
               fontFamily: "var(--font-display)",
               fontWeight: 800,
-              fontSize: "clamp(48px, 8vw, 96px)",
-              lineHeight: 0.95,
+              fontSize: "clamp(52px, 8.5vw, 100px)",
+              lineHeight: 0.93,
               letterSpacing: "-0.04em",
-              marginBottom: 24,
+              marginBottom: 28,
             }}
           >
             <span style={{ color: "var(--text)", display: "block" }}>
@@ -121,26 +216,45 @@ export default function HeroSection({ meta }: { meta: Meta }) {
             style={{
               fontFamily: "var(--font-serif)",
               fontStyle: "italic",
-              fontSize: "clamp(18px, 3vw, 26px)",
+              fontSize: "clamp(20px, 3vw, 28px)",
               color: "var(--text-muted)",
-              marginBottom: 20,
+              marginBottom: 16,
               lineHeight: 1.4,
             }}
           >
             {meta.title}
           </motion.p>
 
-          {/* Tagline */}
-          <motion.p
+          {/* Location badge */}
+          <motion.div
             variants={fadeUp}
             custom={3}
             style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 5,
+              color: "var(--text-subtle)",
+              fontSize: 12,
+              marginBottom: 32,
+            }}
+          >
+            <MapPin size={12} style={{ color: "var(--accent)" }} />
+            <span style={{ fontFamily: "var(--font-body)" }}>
+              {meta.location}
+            </span>
+          </motion.div>
+
+          {/* Tagline */}
+          <motion.p
+            variants={fadeUp}
+            custom={4}
+            style={{
               fontFamily: "var(--font-body)",
               fontSize: "clamp(13px, 2vw, 15px)",
-              color: "var(--text-subtle)",
-              maxWidth: 560,
+              color: "var(--text-muted)",
+              maxWidth: 520,
               margin: "0 auto 48px",
-              lineHeight: 1.8,
+              lineHeight: 1.85,
             }}
           >
             {meta.tagline}
@@ -149,20 +263,20 @@ export default function HeroSection({ meta }: { meta: Meta }) {
           {/* CTA buttons */}
           <motion.div
             variants={fadeUp}
-            custom={4}
+            custom={5}
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: 12,
               flexWrap: "wrap",
-              marginBottom: 56,
+              marginBottom: 52,
             }}
           >
             <motion.a
               href="#projects"
               style={{
-                padding: "12px 28px",
+                padding: "13px 32px",
                 borderRadius: 99,
                 background: "var(--gradient-1)",
                 color: "#fff",
@@ -171,9 +285,14 @@ export default function HeroSection({ meta }: { meta: Meta }) {
                 fontWeight: 600,
                 fontSize: 14,
                 letterSpacing: "-0.01em",
-                boxShadow: "0 0 40px rgba(124,106,247,0.3)",
+                boxShadow:
+                  "0 4px 24px rgba(79,70,229,0.3), 0 1px 4px rgba(79,70,229,0.2)",
               }}
-              whileHover={{ scale: 1.04, boxShadow: "0 0 60px rgba(124,106,247,0.4)" }}
+              whileHover={{
+                scale: 1.05,
+                boxShadow:
+                  "0 8px 32px rgba(79,70,229,0.4), 0 2px 8px rgba(79,70,229,0.2)",
+              }}
               whileTap={{ scale: 0.97 }}
             >
               View Projects
@@ -181,18 +300,24 @@ export default function HeroSection({ meta }: { meta: Meta }) {
             <motion.a
               href={`mailto:${meta.email}`}
               style={{
-                padding: "12px 28px",
+                padding: "13px 32px",
                 borderRadius: 99,
-                border: "1px solid var(--border)",
+                border: "1.5px solid var(--border)",
                 color: "var(--text)",
                 textDecoration: "none",
                 fontFamily: "var(--font-display)",
                 fontWeight: 500,
                 fontSize: 14,
                 letterSpacing: "-0.01em",
-                background: "rgba(255,255,255,0.03)",
+                background: "rgba(255,255,255,0.7)",
+                backdropFilter: "blur(8px)",
               }}
-              whileHover={{ borderColor: "var(--accent)", background: "rgba(124,106,247,0.08)" }}
+              whileHover={{
+                borderColor: "var(--accent)",
+                color: "var(--accent)",
+                background: "rgba(79,70,229,0.05)",
+                scale: 1.03,
+              }}
               whileTap={{ scale: 0.97 }}
             >
               Get in Touch
@@ -202,12 +327,12 @@ export default function HeroSection({ meta }: { meta: Meta }) {
           {/* Social links */}
           <motion.div
             variants={fadeUp}
-            custom={5}
+            custom={6}
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: 8,
+              gap: 10,
             }}
           >
             {[
@@ -222,24 +347,27 @@ export default function HeroSection({ meta }: { meta: Meta }) {
                 rel="noopener noreferrer"
                 title={label}
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 10,
-                  border: "1px solid var(--border)",
+                  width: 42,
+                  height: 42,
+                  borderRadius: 12,
+                  border: "1.5px solid var(--border)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   color: "var(--text-muted)",
                   textDecoration: "none",
-                  background: "rgba(255,255,255,0.03)",
+                  background: "rgba(255,255,255,0.7)",
+                  backdropFilter: "blur(8px)",
+                  boxShadow: "var(--shadow-sm)",
                 }}
                 whileHover={{
                   borderColor: "var(--accent)",
                   color: "var(--accent)",
-                  background: "rgba(124,106,247,0.08)",
-                  scale: 1.1,
+                  background: "rgba(79,70,229,0.06)",
+                  scale: 1.12,
+                  y: -2,
                 }}
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.93 }}
               >
                 <Icon size={16} />
               </motion.a>
@@ -252,10 +380,10 @@ export default function HeroSection({ meta }: { meta: Meta }) {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
+        transition={{ delay: 1.8 }}
         style={{
           position: "absolute",
-          bottom: 32,
+          bottom: 36,
           left: "50%",
           transform: "translateX(-50%)",
           display: "flex",
@@ -265,23 +393,22 @@ export default function HeroSection({ meta }: { meta: Meta }) {
           color: "var(--text-subtle)",
         }}
       >
-        <span style={{ fontSize: 10, letterSpacing: "0.15em", fontFamily: "var(--font-body)" }}>
+        <span
+          style={{
+            fontSize: 10,
+            letterSpacing: "0.18em",
+            fontFamily: "var(--font-body)",
+          }}
+        >
           SCROLL
         </span>
         <motion.div
           animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
         >
-          <ArrowDown size={14} />
+          <ArrowDown size={13} />
         </motion.div>
       </motion.div>
-
-      <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.6; transform: scale(0.8); }
-        }
-      `}</style>
     </section>
   );
 }
